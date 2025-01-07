@@ -8,6 +8,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             // 注册路由
             .configure(routes::configure)
+            // 添加默认处理程序以返回 405 状态码
     })
     .bind("127.0.0.1:8080")?  // 绑定到本地8080端口
     .run()
