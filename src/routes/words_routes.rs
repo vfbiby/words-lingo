@@ -1,10 +1,10 @@
 use ntex::web::{self, HttpResponse};
 
 #[web::post("/words")]
-async fn words() -> impl web::Responder {
-    HttpResponse::Ok().body("words")
+async fn post_words() -> impl web::Responder {
+    HttpResponse::Ok()
 }
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
-    cfg.service(words);
+    cfg.service(post_words);
 }
