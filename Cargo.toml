@@ -1,0 +1,9 @@
+
+[package]
+name = "hello"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ntex = { version = "2.0", features = ["tokio"] }
+sea-orm = { version = "1.1.0", features = [ "sqlx-sqlite", "runtime-tokio-native-tls", "macros", "debug-print" ] }
