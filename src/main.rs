@@ -1,5 +1,5 @@
 use ntex::web::{App, HttpServer};
-use hello::routes;
+use words_lingo::routes;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {

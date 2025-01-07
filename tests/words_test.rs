@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use hello::routes;
+    use words_lingo::routes;
     use ntex::http::StatusCode;
     use ntex::web::test::{self};
     use ntex::web::App;
