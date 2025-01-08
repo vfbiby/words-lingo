@@ -13,7 +13,27 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(pk_auto(Word::WordId))
                     .col(string(Word::Word))
-                    .col(string(Word::PartOfSpeech))
+                    .col(
+                        ColumnDef::new(Word::PartOfSpeech)
+                            .enumeration(
+                                Word::PartOfSpeech,
+                                vec![
+                                    Alias::new("noun"),
+                                    Alias::new("verb"),
+                                    Alias::new("adjective"),
+                                    Alias::new("adverb"),
+                                    Alias::new("pronoun"),
+                                    Alias::new("preposition"),
+                                    Alias::new("conjunction"),
+                                    Alias::new("interjection"),
+                                    Alias::new("article"),
+                                    Alias::new("determiner"),
+                                    Alias::new("modal_verb"),
+                                    Alias::new("auxiliary_verb"),
+                                ],
+                            )
+                            .not_null(),
+                    )
                     .col(string(Word::Definition))
                     .col(string(Word::ExampleSentence))
                     .index(
