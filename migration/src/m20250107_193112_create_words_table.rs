@@ -6,6 +6,23 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let parts_of_speech = [
+            "noun",
+            "verb",
+            "adjective",
+            "adverb",
+            "pronoun",
+            "preposition",
+            "conjunction",
+            "interjection",
+            "article",
+            "determiner",
+            "modal_verb",
+            "auxiliary_verb",
+        ];
+
+        let part_of_speech_vec: Vec<Alias> = parts_of_speech.iter().map(|&pos| Alias::new(pos)).collect();
+
         manager
             .create_table(
                 Table::create()
@@ -15,23 +32,7 @@ impl MigrationTrait for Migration {
                     .col(string(Word::Word))
                     .col(
                         ColumnDef::new(Word::PartOfSpeech)
-                            .enumeration(
-                                Word::PartOfSpeech,
-                                vec![
-                                    Alias::new("noun"),
-                                    Alias::new("verb"),
-                                    Alias::new("adjective"),
-                                    Alias::new("adverb"),
-                                    Alias::new("pronoun"),
-                                    Alias::new("preposition"),
-                                    Alias::new("conjunction"),
-                                    Alias::new("interjection"),
-                                    Alias::new("article"),
-                                    Alias::new("determiner"),
-                                    Alias::new("modal_verb"),
-                                    Alias::new("auxiliary_verb"),
-                                ],
-                            )
+                            .enumeration(Word::PartOfSpeech, part_of_speech_vec)
                             .not_null(),
                     )
                     .col(string(Word::Definition))
