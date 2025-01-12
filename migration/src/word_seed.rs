@@ -1,8 +1,7 @@
 use migration::DbErr;
-use migration::sea_orm::DatabaseConnection;
+use migration::sea_orm::{DatabaseConnection, ActiveModelTrait};
 use words_lingo::entity::sea_orm_active_enums::PartOfSpeech;
-// use sea_orm::database::db_connection::DatabaseConnection;
-use words_lingo::entity::word::Model;
+use words_lingo::entity::word::{Model, ActiveModel};
 
 pub async fn seed_words(db: &DatabaseConnection) -> Result<(), DbErr> {
     let words = vec![
@@ -30,7 +29,8 @@ pub async fn seed_words(db: &DatabaseConnection) -> Result<(), DbErr> {
     ];
 
     for word in words {
-        word.insert(db).await?;
+        let active_model: ActiveModel = word.into();
+        active_model.insert(db).await?;
     }
 
     Ok(())
