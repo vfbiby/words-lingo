@@ -1,2 +1,2 @@
 pub mod routes;
-mod entity;
+pub mod entity;
