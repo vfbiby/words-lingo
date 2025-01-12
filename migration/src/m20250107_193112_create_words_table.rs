@@ -6,22 +6,8 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let parts_of_speech = [
-            "noun",
-            "verb",
-            "adjective",
-            "adverb",
-            "pronoun",
-            "preposition",
-            "conjunction",
-            "interjection",
-            "article",
-            "determiner",
-            "modal_verb",
-            "auxiliary_verb",
-        ];
-
-        let part_of_speech_vec: Vec<Alias> = parts_of_speech.iter().map(|&pos| Alias::new(pos)).collect();
+        let parts_of_speech = get_parts_of_speech();
+        let part_of_speech_vec = create_part_of_speech_aliases(&parts_of_speech);
 
         manager
             .create_table(
@@ -54,6 +40,27 @@ impl MigrationTrait for Migration {
             .drop_table(Table::drop().table(Word::Table).to_owned())
             .await
     }
+}
+
+fn get_parts_of_speech() -> [&'static str; 12] {
+    [
+        "noun",
+        "verb",
+        "adjective",
+        "adverb",
+        "pronoun",
+        "preposition",
+        "conjunction",
+        "interjection",
+        "article",
+        "determiner",
+        "modal_verb",
+        "auxiliary_verb",
+    ]
+}
+
+fn create_part_of_speech_aliases(parts_of_speech: &[&str]) -> Vec<Alias> {
+    parts_of_speech.iter().map(|&pos| Alias::new(pos)).collect()
 }
 
 #[derive(DeriveIden)]
