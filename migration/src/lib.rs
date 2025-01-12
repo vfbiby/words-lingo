@@ -6,6 +6,7 @@ mod m20250107_193113_create_users_table;
 mod m20250112_172322_create_user_word_progress_table;
 mod m20250112_185317_create_content_table;
 mod m20250112_190406_create_sentences_table;
+mod m20250112_190954_create_sentence_words_table;
 
 pub struct Migrator;
 
@@ -19,6 +20,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250112_172322_create_user_word_progress_table::Migration),
             Box::new(m20250112_185317_create_content_table::Migration),
             Box::new(m20250112_190406_create_sentences_table::Migration),
+            Box::new(m20250112_190954_create_sentence_words_table::Migration),
         ]
     }
 }

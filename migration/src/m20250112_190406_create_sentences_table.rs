@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Sentence {
+pub enum Sentence {
     Table,
     SentenceId,
     ContentId,
