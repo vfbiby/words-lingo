@@ -39,7 +39,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Content {
+pub enum Content {
     Table,
     ContentId,
     Title,
