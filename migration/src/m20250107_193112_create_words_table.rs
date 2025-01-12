@@ -64,7 +64,7 @@ fn create_part_of_speech_aliases(parts_of_speech: &[&str]) -> Vec<Alias> {
 }
 
 #[derive(DeriveIden)]
-enum Word {
+pub enum Word {
     Table,
     WordId,
     Word,
