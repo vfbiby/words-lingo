@@ -2494,6 +2494,8 @@ name = "seed"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "async-trait",
+ "clap",
  "dotenv",
  "sea-orm",
  "words_lingo",
