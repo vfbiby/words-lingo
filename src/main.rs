@@ -1,11 +1,23 @@
+use dotenv::dotenv;
 use ntex::web::{App, HttpServer};
+use sea_orm::Database;
 use words_lingo::routes;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+
+    // 创建数据库连接
+    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let db = Database::connect(db_url)
+        .await
+        .expect("Failed to connect to database");
+
     // 创建 web 服务
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
+            // 添加数据库连接状态
+            .state(db.clone())
             // 注册路由
             .configure(routes::configure)
     })

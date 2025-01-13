@@ -1,12 +1,12 @@
 [package]
-name = "words_lingo_migration"
+name = "migration"
 version = "0.1.0"
 edition = "2021"
 publish = false
 
-[lib]
-name = "migration"
-path = "src/lib.rs"
+#[lib]
+#name = "migration"
+#path = "src/lib.rs"
 
 [dependencies]
 async-std = { version = "1", features = ["attributes", "tokio1"] }
