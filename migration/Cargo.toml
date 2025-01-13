@@ -9,6 +9,8 @@ publish = false
 #path = "src/lib.rs"
 
 [dependencies]
+seed = { path = "../seed" }
+
 async-std = { version = "1", features = ["attributes", "tokio1"] }
 dotenv = "0.15.0"
 words_lingo = { path = ".." }

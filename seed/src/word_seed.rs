@@ -1,5 +1,4 @@
-use migration::DbErr;
-use migration::sea_orm::{DatabaseConnection, ActiveModelTrait};
+use sea_orm::{ActiveModelTrait, DatabaseConnection, DbErr};
 use words_lingo::entity::sea_orm_active_enums::PartOfSpeech;
 use words_lingo::entity::word::{Model, ActiveModel};
 

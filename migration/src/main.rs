@@ -1,10 +1,8 @@
-mod word_seed;
-
 use sea_orm_migration::prelude::*;
 use sea_orm::{Database, DatabaseConnection};
 use dotenv::dotenv;
 use std::env;
-use crate::word_seed::seed_words;
+use seed::seed_words;
 
 #[async_std::main]
 async fn main() {
