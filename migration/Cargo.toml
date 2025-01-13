@@ -12,7 +12,6 @@ publish = false
 seed = { path = "../seed" }
 
 async-std = { version = "1", features = ["attributes", "tokio1"] }
-dotenv = "0.15.0"
 words_lingo = { path = ".." }
 
 [dependencies.sea-orm-migration]

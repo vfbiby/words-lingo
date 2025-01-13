@@ -1423,7 +1423,6 @@ name = "migration"
 version = "0.1.0"
 dependencies = [
  "async-std",
- "dotenv",
  "sea-orm-migration",
  "seed",
  "words_lingo",
@@ -2494,6 +2493,8 @@ dependencies = [
 name = "seed"
 version = "0.1.0"
 dependencies = [
+ "async-std",
+ "dotenv",
  "sea-orm",
  "words_lingo",
 ]
