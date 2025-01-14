@@ -18,6 +18,8 @@ pub enum PartOfSpeech {
     Noun,
     #[sea_orm(string_value = "verb")]
     Verb,
+    #[sea_orm(string_value = "vi")]
+    Vi,
     #[sea_orm(string_value = "adjective")]
     Adjective,
     #[sea_orm(string_value = "adverb")]

@@ -23,7 +23,7 @@ fn register_word_seeder() {
 #[async_trait]
 impl Seeder for WordSeeder {
     async fn seed(&self, db: &DatabaseConnection) -> Result<(), sea_orm::DbErr> {
-        seed_words(db).await?;
+        // seed_words(db).await?;
         seed_words_from_csv(db).await
     }
 }
@@ -78,61 +78,79 @@ pub async fn seed_words_from_csv(db: &DatabaseConnection) -> Result<(), DbErr> {
         let word = &record[0];
         let translation = &record[1];
 
-        let (part_of_speech, definition) = parse_translation(translation)?;
+        let entries = parse_translation(translation)?;
+        for (part_of_speech, definition) in entries {
+            let model = Model {
+                word_id,
+                word: word.to_string(),
+                part_of_speech,
+                definition,
+                example_sentence: String::new(), // 暂时留空
+            };
 
-        let model = Model {
-            word_id,
-            word: word.to_string(),
-            part_of_speech,
-            definition,
-            example_sentence: String::new(), // 暂时留空
-        };
+            let active_model: ActiveModel = model.into();
+            active_model.insert(db).await?;
 
-        let active_model: ActiveModel = model.into();
-        active_model.insert(db).await?;
-
-        word_id += 1;
-        count += 1;
+            word_id += 1;
+            count += 1;
+        }
     }
 
     Ok(())
 }
 
-fn parse_translation(translation: &str) -> Result<(PartOfSpeech, String), DbErr> {
+fn parse_translation(translation: &str) -> Result<Vec<(PartOfSpeech, String)>, DbErr> {
     // 支持的词性标记
     let pos_markers = [
         ("n.", PartOfSpeech::Noun),
         ("v.", PartOfSpeech::Verb),
+        ("vt.", PartOfSpeech::Verb),
+        ("vi.", PartOfSpeech::Vi),
         ("adj.", PartOfSpeech::Adjective),
     ];
 
-    let mut pos = PartOfSpeech::Noun; // 默认名词
-    let mut definitions = Vec::new();
-    let remaining = translation;
+    let mut entries = Vec::new();
+    let mut remaining = translation;
 
-    // 查找第一个词性标记
-    if let Some((marker, found_pos, _)) = pos_markers.iter()
-        .filter_map(|(m, p)| remaining.find(m).map(|idx| (m, p, idx)))
-        .min_by_key(|&(_, _, idx)| idx)
-    {
-        pos = found_pos.clone();
-        // 提取定义部分
-        let def_part = &remaining[marker.len()..];
-        // 处理多个定义
-        let defs: Vec<&str> = def_part.split(',').collect();
-        definitions.extend(defs.iter().map(|s| {
+    // 查找所有词性标记
+    while !remaining.is_empty() {
+        if let Some((marker, found_pos, idx)) = pos_markers.iter()
+            .filter_map(|(m, p)| remaining.find(m).map(|i| (m, p, i)))
+            .min_by_key(|&(_, _, i)| i)
+        {
+            // 提取当前词性部分
+            let pos = found_pos.clone();
+            let def_part = if let Some(next_marker) = pos_markers.iter()
+                .filter_map(|(m, _)| remaining[idx + marker.len()..].find(m).map(|i| (m, i)))
+                .min_by_key(|&(_, i)| i)
+            {
+                &remaining[idx + marker.len()..idx + marker.len() + next_marker.1]
+            } else {
+                &remaining[idx + marker.len()..]
+            };
+
+            // 处理多个定义
+            let defs: Vec<&str> = def_part.split(',').collect();
             let prefix = match pos {
                 PartOfSpeech::Noun => "[名]",
                 PartOfSpeech::Verb => "[动]",
+                PartOfSpeech::Vi => "[不及物动词]",
                 PartOfSpeech::Adjective => "[形]",
                 _ => "[未分类]",
             };
-            format!("{} {}", prefix, s.trim())
-        }));
-    } else {
-        // 没有找到词性标记，整个作为定义
-        definitions.push(format!("[未分类] {}", remaining));
+            let definition = defs.iter()
+                .map(|s| format!("{} {}", prefix, s.trim()))
+                .collect::<Vec<_>>()
+                .join("；");
+
+            entries.push((pos, definition));
+            remaining = &remaining[idx + marker.len() + def_part.len()..];
+        } else {
+            // 没有找到词性标记，整个作为定义
+            entries.push((PartOfSpeech::Noun, format!("[未分类] {}", remaining)));
+            break;
+        }
     }
 
-    Ok((pos, definitions.join("；")))
+    Ok(entries)
 }

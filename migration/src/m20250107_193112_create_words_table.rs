@@ -23,13 +23,13 @@ impl MigrationTrait for Migration {
                     )
                     .col(string(Word::Definition))
                     .col(string(Word::ExampleSentence))
-                    .index(
-                        Index::create()
-                            .name("word_part_of_speech")
-                            .col(Word::Word)
-                            .col(Word::PartOfSpeech)
-                            .unique(),
-                    )
+                    // .index(
+                    //     Index::create()
+                    //         .name("word_part_of_speech")
+                    //         .col(Word::Word)
+                    //         .col(Word::PartOfSpeech)
+                    //         .unique(),
+                    // )
                     .to_owned(),
             )
             .await
@@ -42,10 +42,11 @@ impl MigrationTrait for Migration {
     }
 }
 
-fn get_parts_of_speech() -> [&'static str; 12] {
+fn get_parts_of_speech() -> [&'static str; 13] {
     [
         "noun",
         "verb",
+        "vi",
         "adjective",
         "adverb",
         "pronoun",
