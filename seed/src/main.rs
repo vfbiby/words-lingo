@@ -2,6 +2,7 @@ use clap::{Arg, Command};
 use sea_orm::{Database, DatabaseConnection};
 use dotenv::dotenv;
 use std::collections::HashMap;
+use std::sync::Arc;
 
 mod seeds;
 
@@ -31,7 +32,7 @@ async fn main() {
         .expect("Failed to connect to database");
 
     // Get all seeders
-    let seeders: HashMap<&str, Box<dyn seeds::Seeder + Send + Sync>> = seeds::get_seeders();
+    let seeders: HashMap<&str, Arc<dyn seeds::Seeder + Send + Sync>> = seeds::get_seeders();
 
     if let Some(seeder_name) = matches.get_one::<String>("seeder") {
         // Run specific seeder
