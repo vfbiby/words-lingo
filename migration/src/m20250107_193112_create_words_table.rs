@@ -42,12 +42,13 @@ impl MigrationTrait for Migration {
     }
 }
 
-fn get_parts_of_speech() -> [&'static str; 13] {
+fn get_parts_of_speech() -> [&'static str; 14] {
     [
         "noun",
         "verb",
         "vi",
-        "adjective",
+        "vt",
+        "adj",
         "adverb",
         "pronoun",
         "preposition",

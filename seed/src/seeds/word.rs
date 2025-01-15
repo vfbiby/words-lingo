@@ -11,7 +11,7 @@ use std::path::Path;
 
 // 配置常量
 const CSV_PATH: &str = "word_translation.csv";
-const MAX_RECORDS: usize = 100;
+const MAX_RECORDS: usize = 1000;
 
 pub struct WordSeeder;
 
@@ -22,8 +22,8 @@ fn register_word_seeder() {
 
 #[async_trait]
 impl Seeder for WordSeeder {
-    async fn seed(&self, db: &DatabaseConnection) -> Result<(), sea_orm::DbErr> {
-        // seed_words(db).await?;
+    async fn seed(&self, db: &DatabaseConnection) -> Result<(), DbErr> {
+        seed_words(db).await?;
         seed_words_from_csv(db).await
     }
 }
@@ -135,6 +135,7 @@ fn parse_translation(translation: &str) -> Result<Vec<(PartOfSpeech, String)>, D
                 PartOfSpeech::Noun => "[名]",
                 PartOfSpeech::Verb => "[动]",
                 PartOfSpeech::Vi => "[不及物动词]",
+                PartOfSpeech::Vt => "[及物动词]",
                 PartOfSpeech::Adjective => "[形]",
                 _ => "[未分类]",
             };
