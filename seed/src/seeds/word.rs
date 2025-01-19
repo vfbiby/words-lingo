@@ -118,17 +118,11 @@ fn parse_translation(translation: &str) -> Result<Vec<(PartOfSpeech, String)>, D
 
     // 查找所有词性标记
     while !remaining.is_empty() {
-        if let Some((marker, found_pos, idx)) = pos_markers
-            .iter()
-            .filter_map(|(m, p)| remaining.find(m).map(|i| (m, p, i)))
-            .min_by_key(|&(_, _, i)| i)
+        if let Some((marker, found_pos, idx)) = find_min_marker(&pos_markers.clone(), remaining)
         {
             // 提取当前词性部分
             let pos = found_pos.clone();
-            let def_part = if let Some(next_marker) = pos_markers
-                .iter()
-                .filter_map(|(m, _)| remaining[idx + marker.len()..].find(m).map(|i| (m, i)))
-                .min_by_key(|&(_, i)| i)
+            let def_part = if let Some(next_marker) = extract_definition_part(pos_markers.clone(), remaining, marker, idx)
             {
                 &remaining[idx + marker.len()..idx + marker.len() + next_marker.1]
             } else {
@@ -161,6 +155,20 @@ fn parse_translation(translation: &str) -> Result<Vec<(PartOfSpeech, String)>, D
     }
 
     Ok(entries)
+}
+
+fn extract_definition_part<'a>(pos_markers: [(&'a str, PartOfSpeech); 5], remaining: &'a str, marker: &'a &'a str, idx: usize) -> Option<(&'a str, usize)> {
+    pos_markers
+        .iter()
+        .filter_map(|(m, _)| remaining[idx + marker.len()..].find(m).map(|i| (*m, i)))
+        .min_by_key(|&(_, i)| i)
+}
+
+fn find_min_marker<'a>(pos_markers: &'a [(&'a str, PartOfSpeech); 5], remaining: &'a str) -> Option<(&'a &'a str, &'a PartOfSpeech, usize)> {
+    pos_markers
+        .iter()
+        .filter_map(|(m, p)| remaining.find(m).map(|i| (m, p, i)))
+        .min_by_key(|&(_, _, i)| i)
 }
 
 #[cfg(test)]
